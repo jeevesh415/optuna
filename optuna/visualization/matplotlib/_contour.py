@@ -1,20 +1,25 @@
 from __future__ import annotations
 
-from collections.abc import Callable
-from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import numpy as np
 
 from optuna._experimental import experimental_func
 from optuna._imports import try_import
-from optuna.study import Study
-from optuna.trial import FrozenTrial
 from optuna.visualization._contour import _AxisInfo
 from optuna.visualization._contour import _ContourInfo
 from optuna.visualization._contour import _get_contour_info
 from optuna.visualization._contour import _PlotValues
 from optuna.visualization._contour import _SubContourInfo
 from optuna.visualization.matplotlib._matplotlib_imports import _imports
+
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
+    from collections.abc import Sequence
+
+    from optuna.study import Study
+    from optuna.trial import FrozenTrial
 
 
 with try_import() as _optuna_imports:
@@ -133,9 +138,6 @@ class _LabelEncoder:
     def transform(self, labels: list[str]) -> list[int]:
         return [self.labels.index(label) for label in labels]
 
-    def fit_transform(self, labels: list[str]) -> list[int]:
-        return self.fit(labels).transform(labels)
-
     def get_labels(self) -> list[str]:
         return self.labels
 
@@ -205,11 +207,11 @@ def _calculate_griddata(info: _SubContourInfo) -> tuple[np.ndarray, _PlotValues,
     if len(x_values) == 0 or len(y_values) == 0:
         return np.array([]), _PlotValues([], []), _PlotValues([], [])
 
-    xi, cat_param_labels_x, cat_param_pos_x, transformed_x_values = _calculate_axis_data(
+    xi, _, _, transformed_x_values = _calculate_axis_data(
         xaxis,
         x_values,
     )
-    yi, cat_param_labels_y, cat_param_pos_y, transformed_y_values = _calculate_axis_data(
+    yi, _, _, transformed_y_values = _calculate_axis_data(
         yaxis,
         y_values,
     )
